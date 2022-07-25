@@ -1,7 +1,6 @@
 import 'package:transformer_simplified/transformers.dart';
 
 class MappingRegistry {
-
   final Map<String, Mapping> _byId = {};
 
   MappingRegistry._();
@@ -80,7 +79,8 @@ class MainMapping extends Mapping {
       String? type = mappingAsJson['type'];
       switch (type) {
         case 'complex':
-          ComplexMapping mapping = ComplexMapping.build(mappingAsJson, registry);
+          ComplexMapping mapping =
+              ComplexMapping.build(mappingAsJson, registry);
           mappingByInput[mapping.inputPath] = mapping;
           break;
         default:
@@ -177,8 +177,8 @@ class ComplexMapping implements Mapping {
 
     bool? list = mappingAsJson['list'];
 
-    return ComplexMapping(
-        inputPath, outputPath, transformer, subMappingId, list ?? false, registry);
+    return ComplexMapping(inputPath, outputPath, transformer, subMappingId,
+        list ?? false, registry);
   }
 }
 
@@ -278,87 +278,13 @@ class MappingUtils {
       return null;
     }
     if (transformer.startsWith(TransformerRegistry.builtIn)) {
-      return TransformerRegistry.registry.getBuiltIn(
+      return TransformerRegistry.get().getBuiltIn(
           transformer.substring(TransformerRegistry.builtIn.length));
     }
     if (transformer.startsWith(TransformerRegistry.custom)) {
-      return TransformerRegistry.registry
+      return TransformerRegistry.get()
           .getCustom(transformer.substring(TransformerRegistry.custom.length));
     }
-    //TODO another mapping !
     return null;
   }
 }
-
-/*
-
-class ListMapping implements Mapping {
-  String inputPath;
-  String outputPath;
-  Transformer? transformer;
-  String? subMappingId;
-
-  ListMapping(this.inputPath, this.outputPath, this.transformer,
-      this.subMappingId);
-
-  @override
-  List<dynamic> execute(dynamic input) {
-    if (subMappingId != null) {
-      Mapping? mapping = MappingRegistry.registry.get(subMappingId!);
-      if (mapping == null) {
-        throw Exception('Mapping $subMappingId does not exist.');
-      }
-      List<dynamic> result = [];
-      for (dynamic item in input) {
-        result.add(mapping.execute(item));
-      }
-      return result;
-    }
-
-    //Here transformer should not be null
-    List<dynamic> result = [];
-    for (dynamic item in input) {
-      result.add(transformer!.transform(item));
-    }
-    return result;
-  }
-
-  static ListMapping build(dynamic mappingAsJson) {
-    dynamic? input = mappingAsJson['input'];
-    if (input == null) {
-      throw Exception('input cannot be null');
-    }
-    String? inputPath = input['path'];
-    if (inputPath == null) {
-      throw Exception('input path cannot be null');
-    }
-
-    dynamic? output = mappingAsJson['output'];
-    if (output == null) {
-      throw Exception('output cannot be null');
-    }
-    String? outputPath = output['path'];
-    if (outputPath == null) {
-      throw Exception('input path cannot be null');
-    }
-
-    String? transformerAsString = mappingAsJson['transformer'];
-    if (transformerAsString == null) {
-      throw Exception('You need a mapping or a transformer for lists');
-    }
-
-    String? subMappingId;
-    Transformer? transformer;
-    if (transformerAsString.startsWith(TransformerRegistry.mapping)) {
-      subMappingId =
-          transformerAsString.substring(TransformerRegistry.mapping.length);
-    } else {
-      transformer = MappingUtils.getTransformer(transformerAsString);
-    }
-
-    if (subMappingId == null && transformer == null) {
-      throw Exception('You need a mapping or a transformer for lists');
-    }
-    return ListMapping(inputPath, outputPath, transformer, subMappingId);
-  }
-}*/

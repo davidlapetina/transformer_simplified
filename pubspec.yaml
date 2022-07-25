@@ -1,7 +1,7 @@
 name: transformer_simplified
-description: Simple framework to apply transformation and mapping between two maps
+description: Simple framework to apply transformation and mapping between two maps, easy to use to transform and map between two different Json structures.
 version: 0.0.1
-homepage:
+homepage: https://github.com/davidlapetina/transformer_simplified
 
 environment:
   sdk: ">=2.17.3 <3.0.0"

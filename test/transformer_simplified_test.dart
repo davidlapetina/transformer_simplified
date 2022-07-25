@@ -7,11 +7,9 @@ import 'package:transformer_simplified/transformers.dart';
 
 void main() {
   test('test writers & readers', () async {
-    dynamic jsonData = json.decode(await File(
-            './example/mapping.json')
-        .readAsString());
-    TransformerRegistry.registry.setCustom('revert', Revert());
-
+    dynamic jsonData =
+        json.decode(await File('./example/mapping.json').readAsString());
+    TransformerRegistry.get().setCustom('revert', Revert());
 
     TransformerSimplified.get().load('mapping', jsonData);
 
@@ -37,23 +35,28 @@ void main() {
       ],
     };
 
-    dynamic output = TransformerSimplified.get().execute(input, 'formUserToJSonUser', 'mapping');
+    dynamic output = TransformerSimplified.get()
+        .execute(input, 'formUserToJSonUser', 'mapping');
     expect(key1LowerCase.toUpperCase(), output['name1']);
-    expect(streetUpperCase.toLowerCase(), output['addresses'].elementAt(0)['street']);
-    expect('esacrewol ni xedec rehto', output['addresses'].elementAt(1)['alias']['newZipCode']);
+    expect(streetUpperCase.toLowerCase(),
+        output['addresses'].elementAt(0)['street']);
+    expect('esacrewol ni xedec rehto',
+        output['addresses'].elementAt(1)['alias']['newZipCode']);
     print(output);
   });
 }
 
-class Revert extends Transformer {
+class Revert extends Transformer<String, String> {
   @override
-  String transform(dynamic input) {
+  String? transform(String? input) {
+    if (input == null) {
+      return null;
+    }
     //Except a string
     String result = '';
-    for (int i = input.length-1 ; i>= 0 ; i--) {
-      result+=input.substring(i, i+1);
+    for (int i = input.length - 1; i >= 0; i--) {
+      result += input.substring(i, i + 1);
     }
     return result;
   }
-
 }

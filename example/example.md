@@ -1,21 +1,8 @@
+# Example of how to use a mapping
+
+# Mapping
+```json
 [
-  {
-    "comment": "documentation",
-    "id": "documentation for possible values",
-    "mappings": [
-      {
-        "type": "single|complex|if nothing or something else then single",
-        "list": false,
-        "input": {
-          "path": "path"
-        },
-        "output": {
-          "path": "path"
-        },
-        "transformer": "mapping://otherMapping|builtin://aFunction|custom://aCustomFunction|direct://*"
-      }
-    ]
-  },
   {
     "id": "formUserToJSonUser",
     "mappings": [
@@ -103,3 +90,38 @@
     ]
   }
 ]
+
+```
+# Dart code showing how to use the mapping
+```dart
+ dynamic jsonData =
+        json.decode(await File('./example/mapping.json').readAsString());
+    TransformerRegistry.get().setCustom('revert', Revert());
+
+    TransformerSimplified.get().load('mapping', jsonData);
+
+    String key1LowerCase = 'david lower case';
+    String streetUpperCase = 'STREET IN UPPERCASE';
+    String zipCodeAsString = '10000';
+    String otherZipCode = 'other cedex in lowercase';
+    Map<String, dynamic> input = {
+      'key1': key1LowerCase,
+      'key2': [
+        {
+          'street': streetUpperCase,
+          'zipcode': zipCodeAsString,
+          'city': 'myCity',
+          'alias': {'otherZipCode': 'cedex in lowercase'}
+        },
+        {
+          'street': 'STREET2 IN UPPERCASE2',
+          'zipcode': '30000',
+          'city': 'yourCity',
+          'alias': {'otherZipCode': otherZipCode}
+        }
+      ],
+    };
+
+    dynamic output = TransformerSimplified.get()
+        .execute(input, 'formUserToJSonUser', 'mapping');
+```
