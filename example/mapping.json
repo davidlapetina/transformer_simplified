@@ -1,0 +1,107 @@
+[
+  {
+    "comment": "documentation",
+    "id": "documentation for possible values",
+    "mappings": [
+      {
+        "type": "single|complex|if nothing or something else then single",
+        "list": false,
+        "list_comment" : "true|false|if nothing then false",
+        "input": {
+          "path": "path"
+        },
+        "output": {
+          "path": "path"
+        },
+        "transformer": "mapping://otherMapping|builtin://aFunction|custom://aCustomFunction|direct://*"
+      }
+    ]
+  },
+  {
+    "id": "formUserToJSonUser",
+    "mappings": [
+      {
+        "type": "single",
+        "input": {
+          "path": "key1"
+        },
+        "output": {
+          "path": "name1"
+        },
+        "transformer": "builtin://toUppercase"
+      },
+      {
+        "type": "complex",
+        "list": true,
+        "input": {
+          "path": "key2"
+        },
+        "output": {
+          "path": "addresses",
+          "comment": "the type of the list is either the one introspected from the first root type or a Map<String, dynamic> if the output is a map/list with no predefined type"
+        },
+        "transformer": "mapping://map2Address"
+      }
+    ]
+  },
+  {
+    "id": "map2Address",
+    "mappings": [
+      {
+        "type": "single",
+        "input": {
+          "path": "street"
+        },
+        "output": {
+          "path": "street"
+        },
+        "transformer": "builtin://toLowercase"
+      },
+      {
+        "type": "single",
+        "input": {
+          "path": "zipcode"
+        },
+        "output": {
+          "path": "ZipCode"
+        },
+        "transformer": "builtin://toInteger"
+      },
+      {
+        "type": "single",
+        "input": {
+          "path": "city"
+        },
+        "output": {
+          "path": "city"
+        },
+        "transformerx": "custom://com.example.myTransformer"
+      },
+      {
+        "type": "complex",
+        "input": {
+          "path": "alias"
+        },
+        "output": {
+          "path": "alias"
+        },
+        "transformer": "mapping://mappingAlias"
+      }
+    ]
+  },
+  {
+    "id": "mappingAlias",
+    "mappings": [
+      {
+        "type": "single",
+        "input": {
+          "path": "otherZipCode"
+        },
+        "output": {
+          "path": "newZipCode"
+        },
+        "transformer": "builtin://revert"
+      }
+    ]
+  }
+]
